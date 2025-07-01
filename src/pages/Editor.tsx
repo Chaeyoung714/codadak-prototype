@@ -188,8 +188,8 @@ for i in range(10):
         </div>
       </div>
 
-      {/* 코드 에디터 - 상단 50% */}
-      <div className="flex flex-col h-[50vh]">
+      {/* 코드 에디터 - 상단 40% */}
+      <div className="flex flex-col h-[35vh]">
         <CodeEditor
           ref={textareaRef}
           code={code}
@@ -203,8 +203,8 @@ for i in range(10):
         />
       </div>
 
-      {/* 하단바 - 화면의 50% 차지 */}
-      <div className="h-[50vh] bg-card border-t border-border flex flex-col">
+      {/* 하단바 - 화면의 65% 차지 */}
+      <div className="h-[65vh] bg-card border-t border-border flex flex-col">
         {/* 블록 추천 영역 */}
         {isBlockMode && showSuggestions && (
           <div className="flex-1 min-h-0 overflow-y-auto border-b border-border">
