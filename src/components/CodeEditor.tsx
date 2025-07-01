@@ -1,4 +1,3 @@
-
 import { forwardRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -91,7 +90,7 @@ export const CodeEditor = forwardRef<HTMLTextAreaElement, CodeEditorProps>(
     };
 
     return (
-      <div className="flex-1 flex bg-background">
+      <div className={cn("flex-1 flex bg-background h-full", className)}>
         {/* 줄 번호 */}
         <div className="bg-muted/30 p-4 pr-3 border-r border-border min-w-[3rem] text-right">
           {lineNumbers.map((num) => (
@@ -123,7 +122,6 @@ export const CodeEditor = forwardRef<HTMLTextAreaElement, CodeEditorProps>(
             autoComplete="off"
             autoCorrect="off"
             style={{
-              minHeight: 'calc(100vh - 200px)',
               tabSize: 2
             }}
           />

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Save, Undo, Plus, Minus, Type, Blocks, Play, Copy, Share } from 'lucide-react';
@@ -189,8 +188,8 @@ for i in range(10):
         </div>
       </div>
 
-      {/* 코드 에디터 */}
-      <div className="flex-1 flex flex-col">
+      {/* 코드 에디터 - 상단 50% */}
+      <div className="flex flex-col h-[50vh]">
         <CodeEditor
           ref={textareaRef}
           code={code}
@@ -200,11 +199,15 @@ for i in range(10):
             setCursorPosition(pos);
           }}
           language={language}
+          className="flex-1"
         />
-        
-        {/* 블록 추천 */}
+      </div>
+
+      {/* 하단바 - 화면의 50% 차지 */}
+      <div className="h-[50vh] bg-card border-t border-border flex flex-col">
+        {/* 블록 추천 영역 */}
         {isBlockMode && showSuggestions && (
-          <div className="border-t border-border bg-card">
+          <div className="flex-1 min-h-0 overflow-y-auto border-b border-border">
             <BlockSuggestions
               input={currentInput}
               language={language}
@@ -212,27 +215,51 @@ for i in range(10):
             />
           </div>
         )}
-      </div>
+        
+        {/* 빈 공간 (블록 추천이 없을 때) */}
+        {(!isBlockMode || !showSuggestions) && (
+          <div className="flex-1 p-8 flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <Blocks className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-sm">
+                {isBlockMode ? "코드를 입력하면 블록 추천이 나타납니다" : "블록 모드를 켜서 자동 완성을 사용하세요"}
+              </p>
+            </div>
+          </div>
+        )}
 
-      {/* 하단 도구 모음 */}
-      <div className="p-4 border-t border-border bg-card">
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            줄 {currentLine + 1}, 열 {cursorPosition}
+        {/* 하단 도구 모음 */}
+        <div className="p-4 border-t border-border bg-card/50">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-xs text-muted-foreground">
+              줄 {currentLine + 1}, 열 {cursorPosition}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" className="opacity-60">
+                <Play className="h-4 w-4 mr-1" />
+                실행
+              </Button>
+              <Button variant="ghost" size="sm" className="opacity-60">
+                <Copy className="h-4 w-4 mr-1" />
+                복사
+              </Button>
+              <Button variant="ghost" size="sm" className="opacity-60">
+                <Share className="h-4 w-4 mr-1" />
+                공유
+              </Button>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" className="opacity-60">
-              <Play className="h-4 w-4 mr-1" />
-              실행
+          {/* 추가 컨트롤 버튼들 */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="justify-start">
+              <Save className="h-4 w-4 mr-2" />
+              저장하기
             </Button>
-            <Button variant="ghost" size="sm" className="opacity-60">
-              <Copy className="h-4 w-4 mr-1" />
-              복사
-            </Button>
-            <Button variant="ghost" size="sm" className="opacity-60">
-              <Share className="h-4 w-4 mr-1" />
-              공유
+            <Button variant="outline" size="sm" className="justify-start">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              되돌리기
             </Button>
           </div>
         </div>
