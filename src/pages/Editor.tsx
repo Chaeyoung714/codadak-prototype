@@ -211,6 +211,7 @@ for i in range(10):
             <BlockSuggestions
               input={currentInput}
               language={language}
+              code={code}
               onBlockSelect={handleBlockSelect}
             />
           </div>

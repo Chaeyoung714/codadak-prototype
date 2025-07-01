@@ -7,10 +7,60 @@ import { Code, Zap, Hash, Type } from 'lucide-react';
 interface BlockSuggestionsProps {
   input: string;
   language: string;
+  code: string; // 전체 코드를 받아서 변수명 추출
   onBlockSelect: (block: string, completion: string) => void;
 }
 
-export const BlockSuggestions = ({ input, language, onBlockSelect }: BlockSuggestionsProps) => {
+export const BlockSuggestions = ({ input, language, code, onBlockSelect }: BlockSuggestionsProps) => {
+  // 코드에서 변수명 추출하는 함수
+  const extractVariables = (code: string, language: string): string[] => {
+    const variables = new Set<string>();
+    
+    if (language === 'python') {
+      // Python 변수 선언 패턴들
+      const patterns = [
+        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=/gm, // 기본 할당: variable = value
+        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+=/gm, // 복합 할당: variable += value
+        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*-=/gm, // variable -= value
+        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\*=/gm, // variable *= value
+        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\/=/gm, // variable /= value
+        /for\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+in/g, // for 루프: for var in
+        /def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, // 함수 정의: def function_name(
+        /class\s+([a-zA-Z_][a-zA-Z0-9_]*)/g, // 클래스 정의: class ClassName
+      ];
+      
+      patterns.forEach(pattern => {
+        let match;
+        while ((match = pattern.exec(code)) !== null) {
+          const varName = match[1];
+          if (varName && varName.length > 1 && !['if', 'for', 'while', 'def', 'class'].includes(varName)) {
+            variables.add(varName);
+          }
+        }
+      });
+    } else if (language === 'javascript') {
+      // JavaScript 변수 선언 패턴들
+      const patterns = [
+        /(?:var|let|const)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, // var, let, const 선언
+        /^\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/gm, // 기본 할당
+        /function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, // 함수 선언
+        /class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, // 클래스 선언
+      ];
+      
+      patterns.forEach(pattern => {
+        let match;
+        while ((match = pattern.exec(code)) !== null) {
+          const varName = match[1];
+          if (varName && varName.length > 1) {
+            variables.add(varName);
+          }
+        }
+      });
+    }
+    
+    return Array.from(variables);
+  };
+
   const getSuggestions = () => {
     const suggestions: Array<{
       block: string;
@@ -18,6 +68,9 @@ export const BlockSuggestions = ({ input, language, onBlockSelect }: BlockSugges
       type: 'keyword' | 'function' | 'variable' | 'method';
       description: string;
     }> = [];
+
+    // 기존 변수명들을 추출
+    const declaredVariables = extractVariables(code, language);
 
     if (language === 'python') {
       if (input.toLowerCase().startsWith('f') || input === '') {
@@ -71,14 +124,6 @@ export const BlockSuggestions = ({ input, language, onBlockSelect }: BlockSugges
           { block: 'True', completion: '', type: 'keyword', description: '참 값' }
         );
       }
-
-      // 변수명 추천 (간단한 예시)
-      if (input.includes('list') || input.includes('arr')) {
-        suggestions.push(
-          { block: 'list_a', completion: '', type: 'variable', description: '리스트 변수' },
-          { block: 'array', completion: '', type: 'variable', description: '배열 변수' }
-        );
-      }
     }
 
     // JavaScript 추천
@@ -98,9 +143,21 @@ export const BlockSuggestions = ({ input, language, onBlockSelect }: BlockSugges
       }
     }
 
+    // 선언된 변수들을 추천에 추가
+    declaredVariables.forEach(varName => {
+      if (varName.toLowerCase().includes(input.toLowerCase()) || input === '') {
+        suggestions.push({
+          block: varName,
+          completion: '',
+          type: 'variable',
+          description: '선언된 변수'
+        });
+      }
+    });
+
     return suggestions.filter(s => 
       s.block.toLowerCase().includes(input.toLowerCase()) || input === ''
-    ).slice(0, 6);
+    ).slice(0, 8); // 더 많은 추천을 보여주기 위해 8개로 증가
   };
 
   const getTypeIcon = (type: string) => {
