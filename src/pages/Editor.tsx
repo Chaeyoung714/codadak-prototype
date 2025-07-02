@@ -93,18 +93,22 @@ for i in range(10):
 
   const handleBlockSelect = (block: string, completion: string) => {
     const lines = code.split('\n');
-    const currentLineText = lines[currentLine] || '';
+    let targetLine = currentLine;
+    // textareaRef에서 실제 커서 위치로 줄 번호 계산
+    if (textareaRef.current) {
+      const cursorPos = textareaRef.current.selectionStart;
+      const textBeforeCursor = code.substring(0, cursorPos);
+      targetLine = textBeforeCursor.split('\n').length - 1;
+    }
+    const currentLineText = lines[targetLine] || '';
     const words = currentLineText.trim().split(' ');
     words[words.length - 1] = block;
-    
-    lines[currentLine] = '  '.repeat(getIndentLevel(currentLine)) + words.join(' ') + completion;
+    lines[targetLine] = '  '.repeat(getIndentLevel(targetLine)) + words.join(' ') + completion;
     const newCode = lines.join('\n');
-    
     setCode(newCode);
     addToHistory(newCode);
     setShowSuggestions(false);
     setCurrentInput('');
-    
     toast({ title: `"${block}" 블록 적용됨` });
   };
 
@@ -252,7 +256,7 @@ for i in range(10):
         {/* 하단바 - 화면의 65% 차지 */}
         <div className="h-[55vh] bg-card border-t border-border flex flex-col">
           {/* 블록 추천 영역 */}
-          {isBlockMode && showSuggestions && (
+          {isBlockMode && (showSuggestions || currentInput === '') && (
             <div className="border-b border-border bg-card p-3">
               <div className="flex items-center space-x-3">
                 <Button variant="ghost" size="icon" onClick={() => handleIndent(false)}>
@@ -268,6 +272,7 @@ for i in range(10):
                       language={language}
                       code={code}
                       onBlockSelect={handleBlockSelect}
+                      cursorLine={currentLine}
                     />
                   </div>
                 </div>
@@ -281,7 +286,7 @@ for i in range(10):
               <div className="text-center text-muted-foreground">
                 <Blocks className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p className="text-sm">
-                  {isBlockMode ? "코드를 입력하면 블록 추천이 나타납니다" : "블록 모드를 켜서 자동 완성을 사용하세요"}
+                  {isBlockMode ? "코드를 입력하면 블록 추천이 나타납니다. 또는 아무것도 입력하지 않아도 추천이 표시됩니다." : "블록 모드를 켜서 자동 완성을 사용하세요"}
                 </p>
               </div>
             </div>
