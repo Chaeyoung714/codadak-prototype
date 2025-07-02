@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, Zap, Hash, Type } from 'lucide-react';
 
@@ -86,7 +85,6 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
       block: string;
       completion: string;
       type: 'keyword' | 'function' | 'variable' | 'method';
-      description: string;
     }> = [];
 
     // 기존 변수명들을 추출
@@ -95,53 +93,53 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
     if (language === 'python') {
       if (input.toLowerCase().startsWith('f') || input === '') {
         suggestions.push(
-          { block: 'for', completion: ' i in range():\n    ', type: 'keyword', description: '반복문' },
-          { block: 'function', completion: ' name():\n    return ', type: 'keyword', description: '함수 정의' },
-          { block: 'from', completion: ' module import ', type: 'keyword', description: '모듈 가져오기' }
+          { block: 'for', completion: ' i in range():\n    ', type: 'keyword' },
+          { block: 'function', completion: ' name():\n    return ', type: 'keyword' },
+          { block: 'from', completion: ' module import ', type: 'keyword' }
         );
       }
 
       if (input.toLowerCase().startsWith('i') || input === '') {
         suggestions.push(
-          { block: 'if', completion: ' condition:\n    ', type: 'keyword', description: '조건문' },
-          { block: 'import', completion: ' module', type: 'keyword', description: '모듈 불러오기' },
-          { block: 'in', completion: ' range():', type: 'keyword', description: '범위 지정' }
+          { block: 'if', completion: ' condition:\n    ', type: 'keyword' },
+          { block: 'import', completion: ' module', type: 'keyword' },
+          { block: 'in', completion: ' range():', type: 'keyword' }
         );
       }
 
       if (input.toLowerCase().startsWith('w') || input === '') {
         suggestions.push(
-          { block: 'while', completion: ' condition:\n    ', type: 'keyword', description: '반복문' },
-          { block: 'with', completion: ' open() as file:\n    ', type: 'keyword', description: '파일 처리' }
+          { block: 'while', completion: ' condition:\n    ', type: 'keyword' },
+          { block: 'with', completion: ' open() as file:\n    ', type: 'keyword' }
         );
       }
 
       if (input.toLowerCase().startsWith('r') || input === '') {
         suggestions.push(
-          { block: 'return', completion: ' value', type: 'keyword', description: '값 반환' },
-          { block: 'range', completion: '(10)', type: 'function', description: '숫자 범위' }
+          { block: 'return', completion: ' value', type: 'keyword' },
+          { block: 'range', completion: '(10)', type: 'function' }
         );
       }
 
       if (input.toLowerCase().startsWith('p') || input === '') {
         suggestions.push(
-          { block: 'print', completion: '("")', type: 'function', description: '출력' },
-          { block: 'pass', completion: '', type: 'keyword', description: '빈 구문' }
+          { block: 'print', completion: '("")', type: 'function' },
+          { block: 'pass', completion: '', type: 'keyword' }
         );
       }
 
       if (input.toLowerCase().startsWith('e') || input === '') {
         suggestions.push(
-          { block: 'else', completion: ':\n    ', type: 'keyword', description: '조건문 else' },
-          { block: 'elif', completion: ' condition:\n    ', type: 'keyword', description: '조건문 elif' },
-          { block: 'except', completion: ' Exception:\n    ', type: 'keyword', description: '예외 처리' }
+          { block: 'else', completion: ':\n    ', type: 'keyword' },
+          { block: 'elif', completion: ' condition:\n    ', type: 'keyword' },
+          { block: 'except', completion: ' Exception:\n    ', type: 'keyword' }
         );
       }
 
       if (input.toLowerCase().startsWith('t') || input === '') {
         suggestions.push(
-          { block: 'try', completion: ':\n    \nexcept Exception:\n    ', type: 'keyword', description: '예외 처리' },
-          { block: 'True', completion: '', type: 'keyword', description: '참 값' }
+          { block: 'try', completion: ':\n    \nexcept Exception:\n    ', type: 'keyword' },
+          { block: 'True', completion: '', type: 'keyword' }
         );
       }
     }
@@ -150,15 +148,15 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
     if (language === 'javascript') {
       if (input.toLowerCase().startsWith('f') || input === '') {
         suggestions.push(
-          { block: 'function', completion: ' name() {\n    \n}', type: 'keyword', description: '함수 정의' },
-          { block: 'for', completion: ' (let i = 0; i < length; i++) {\n    \n}', type: 'keyword', description: '반복문' }
+          { block: 'function', completion: ' name() {\n    \n}', type: 'keyword' },
+          { block: 'for', completion: ' (let i = 0; i < length; i++) {\n    \n}', type: 'keyword' }
         );
       }
       
       if (input.toLowerCase().startsWith('c') || input === '') {
         suggestions.push(
-          { block: 'console.log', completion: '("")', type: 'function', description: '콘솔 출력' },
-          { block: 'const', completion: ' variable = ', type: 'keyword', description: '상수 선언' }
+          { block: 'console.log', completion: '("")', type: 'function' },
+          { block: 'const', completion: ' variable = ', type: 'keyword' }
         );
       }
     }
@@ -170,8 +168,7 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
         suggestions.push({
           block: varName,
           completion: '',
-          type: 'variable',
-          description: '선언된 변수'
+          type: 'variable'
         });
       }
     });
@@ -179,16 +176,6 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
     return suggestions.filter(s => 
       inputLower === '' || s.block.toLowerCase().includes(inputLower)
     ).slice(0, 8); // 더 많은 추천을 보여주기 위해 8개로 증가
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'keyword': return <Zap className="h-3 w-3" />;
-      case 'function': return <Code className="h-3 w-3" />;
-      case 'variable': return <Hash className="h-3 w-3" />;
-      case 'method': return <Type className="h-3 w-3" />;
-      default: return <Code className="h-3 w-3" />;
-    }
   };
 
   const getTypeColor = (type: string) => {
@@ -208,37 +195,22 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
   }
 
   return (
-    <Card className="p-3 m-2">
-      <div className="mb-2">
-        <p className="text-xs text-muted-foreground font-medium">추천 블록</p>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-2">
+    <div className="px-3 py-2">
+      <div className="flex flex-wrap gap-2">
         {suggestions.map((suggestion, index) => (
           <Button
             key={index}
             variant="ghost"
-            className="h-auto p-3 flex flex-col items-start space-y-1 hover:bg-primary/10 border border-border/50"
+            size="sm"
+            className="h-8 px-3 hover:bg-primary/10"
             onClick={() => onBlockSelect(suggestion.block, suggestion.completion)}
           >
-            <div className="flex items-center space-x-2 w-full">
-              <Badge variant="secondary" className={`text-xs ${getTypeColor(suggestion.type)}`}>
-                {getTypeIcon(suggestion.type)}
-                <span className="ml-1">{suggestion.block}</span>
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground text-left">
-              {suggestion.description}
-            </p>
+            <Badge variant="secondary" className={`text-xs ${getTypeColor(suggestion.type)}`}>
+              {suggestion.block}
+            </Badge>
           </Button>
         ))}
       </div>
-      
-      <div className="mt-3 pt-2 border-t border-border">
-        <p className="text-xs text-muted-foreground">
-          💡 "{input}" 입력 중... 탭하여 선택하세요
-        </p>
-      </div>
-    </Card>
+    </div>
   );
 };

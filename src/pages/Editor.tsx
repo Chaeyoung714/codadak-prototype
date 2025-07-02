@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Save, Undo, Plus, Minus, Type, Blocks, Play, Copy, Share, GitBranch, Terminal } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, Plus, Minus, Type, Blocks, Play, Copy, Share, GitBranch, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -174,9 +174,6 @@ for i in range(10):
           </div>
           
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" onClick={handleUndo} disabled={historyIndex === 0}>
-              <Undo className="h-4 w-4" />
-            </Button>
             <Button variant="ghost" size="icon" onClick={handleSave}>
               <Save className="h-4 w-4" />
             </Button>
@@ -227,11 +224,11 @@ for i in range(10):
             </div>
             
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon" onClick={() => handleIndent(false)}>
-                <Minus className="h-4 w-4" />
+              <Button variant="ghost" size="icon" onClick={handleUndo} disabled={historyIndex === 0}>
+                <ArrowLeft className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => handleIndent(true)}>
-                <Plus className="h-4 w-4" />
+              <Button variant="ghost" size="icon" disabled={historyIndex >= history.length - 1}>
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -256,13 +253,23 @@ for i in range(10):
         <div className="h-[65vh] bg-card border-t border-border flex flex-col">
           {/* 블록 추천 영역 */}
           {isBlockMode && showSuggestions && (
-            <div className="flex-1 min-h-0 overflow-y-auto border-b border-border">
-              <BlockSuggestions
-                input={currentInput}
-                language={language}
-                code={code}
-                onBlockSelect={handleBlockSelect}
-              />
+            <div className="border-b border-border">
+              <div className="flex items-center px-3 py-2 space-x-2">
+                <Button variant="ghost" size="icon" onClick={() => handleIndent(false)}>
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleIndent(true)}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+                <div className="flex-1">
+                  <BlockSuggestions
+                    input={currentInput}
+                    language={language}
+                    code={code}
+                    onBlockSelect={handleBlockSelect}
+                  />
+                </div>
+              </div>
             </div>
           )}
           
@@ -280,7 +287,7 @@ for i in range(10):
 
           {/* 하단 도구 모음 */}
           <div className="p-4 border-t border-border bg-card/50">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between">
               <div className="text-xs text-muted-foreground">
                 줄 {currentLine + 1}, 열 {cursorPosition}
               </div>
