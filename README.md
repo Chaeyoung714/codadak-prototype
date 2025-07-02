@@ -1,73 +1,71 @@
-# Welcome to your Lovable project
+---
+name: 이슈 템플릿
+about: Describe this issue template's purpose here.
+title: ''
+labels: ''
+assignees: ''
 
-## Project info
+---
 
-**URL**: https://lovable.dev/projects/3ec88bbc-61db-420a-9fea-f1236ff0e79b
+## **💬 [코다닥 피드백]**
 
-## How can I edit this code?
+> 1, 2번 문항은 필수로 작성해주세요! <br> 3, 4번 문항은 필수가 아닙니다!
+> 
 
-There are several ways of editing your application.
+### **1. 🌟 전체적인 인상**
 
-**Use Lovable**
+- **첫 인상은 어땠나요?**
+    
+    
+- **가장 좋았던 기능은 무엇인가요?**
+    
+    
+- **개선되었으면 하는 기능은 무엇인가요?**
+    
+    
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3ec88bbc-61db-420a-9fea-f1236ff0e79b) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+### 2. 🏄 사용자 적합성
 
-**Use your preferred IDE**
+- 주요 사용자 유형 중 가장 **이 서비스를 잘 쓸 것 같은** 사용자 유형을 선택해주세요. 그 이유도 말씀해주세요
+    - [ ]  중간중간 편하게 코딩을 복습하고 싶은 코딩 입문자 이모다
+    - [ ]  지하철에서 알고리즘 문제를 풀고 싶은 알고리즘 풀이자 구하루
+    - [ ]  노트북 없이 여행을 떠나서 간단하게 코드를 작성하고 싶은 개발자 방벨로
+    - [ ]  출근길에 핫픽스 이슈에 대응해야 하는 직장인 김슬링키
+    - 이유
+        
+        
+- 주요 사용자 유형 중 가장 **이 서비스를 사용하지 않을 것 같은** 사용자 유형을 선택해주세요. 그 이유도 말씀해주세요.
+    - [ ]  중간중간 편하게 코딩을 복습하고 싶은 코딩 입문자 이모다
+    - [ ]  지하철에서 알고리즘 문제를 풀고 싶은 알고리즘 풀이자 구하루
+    - [ ]  노트북 없이 여행을 떠나서 간단하게 코드를 작성하고 싶은 개발자 방벨로
+    - [ ]  출근길에 핫픽스 이슈에 대응해야 하는 직장인 김슬링키
+    - 이유
+        
+       
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 3. 👀 유사 서비스 비교
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **모바일로 코드를 편집해본 경험이 있나요? (GitHub Mobile 등)**
+    
+    
+- **(있다면) 어떤 점이 그 서비스보다 좋았나요 / 아쉬웠나요?**
+    
+    
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### **4. 🧠  제안**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **앞으로 추가되었으면 하는 것이 있다면 자유롭게 적어주세요.**
+    
+    
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## **📌 참고 팁**
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3ec88bbc-61db-420a-9fea-f1236ff0e79b) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- 너무 잘 쓰려고 고민하지 않아도 돼요. 다 채우지 않아도 돼요!
+- 솔직하고 편하게 적어주실수록 저에겐 큰 도움이 됩니다.#
