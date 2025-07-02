@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,32 +11,53 @@ interface BlockSuggestionsProps {
 }
 
 export const BlockSuggestions = ({ input, language, code, onBlockSelect }: BlockSuggestionsProps) => {
-  // 코드에서 변수명 추출하는 함수
+  // 코드에서 변수명 추출하는 함수 - 파이썬 성능 최적화
   const extractVariables = (code: string, language: string): string[] => {
     const variables = new Set<string>();
     
     if (language === 'python') {
-      // Python 변수 선언 패턴들
-      const patterns = [
-        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=/gm, // 기본 할당: variable = value
-        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\+=/gm, // 복합 할당: variable += value
-        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*-=/gm, // variable -= value
-        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\*=/gm, // variable *= value
-        /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\/=/gm, // variable /= value
-        /for\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+in/g, // for 루프: for var in
-        /def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, // 함수 정의: def function_name(
-        /class\s+([a-zA-Z_][a-zA-Z0-9_]*)/g, // 클래스 정의: class ClassName
-      ];
+      // 파이썬 예약어 목록 (성능을 위해 Set 사용)
+      const pythonKeywords = new Set([
+        'if', 'else', 'elif', 'for', 'while', 'def', 'class', 'import', 'from',
+        'return', 'try', 'except', 'finally', 'with', 'as', 'pass', 'break',
+        'continue', 'and', 'or', 'not', 'in', 'is', 'True', 'False', 'None'
+      ]);
       
-      patterns.forEach(pattern => {
-        let match;
-        while ((match = pattern.exec(code)) !== null) {
-          const varName = match[1];
-          if (varName && varName.length > 1 && !['if', 'for', 'while', 'def', 'class'].includes(varName)) {
-            variables.add(varName);
-          }
+      // 한 번에 모든 패턴을 처리하는 통합 정규식 (성능 개선)
+      const combinedPattern = /(?:^[ \t]*([a-zA-Z_][a-zA-Z0-9_]*)\s*(?:\+|-)=)|(?:^[ \t]*([a-zA-Z_][a-zA-Z0-9_]*)\s*[*/]=)|(?:^[ \t]*([a-zA-Z_][a-zA-Z0-9_]*)\s*=(?!=))|(?:for\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+in)|(?:def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\()|(?:class\s+([a-zA-Z_][a-zA-Z0-9_]*))/gm;
+      
+      let match;
+      while ((match = combinedPattern.exec(code)) !== null) {
+        // match[1] ~ match[6] 중 하나가 매치됨
+        const varName = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+        
+        if (varName && 
+            varName.length > 1 && 
+            !pythonKeywords.has(varName) &&
+            !varName.startsWith('_') && // private 변수 제외
+            !/^\d/.test(varName)) { // 숫자로 시작하는 것 제외
+          variables.add(varName);
         }
-      });
+      }
+      
+      // 함수 매개변수도 추출 (성능 최적화된 방식)
+      const funcParamPattern = /def\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(([^)]*)\)/g;
+      let funcMatch;
+      while ((funcMatch = funcParamPattern.exec(code)) !== null) {
+        const params = funcMatch[1];
+        if (params) {
+          // 매개변수를 ,로 분리하고 각각 처리
+          params.split(',').forEach(param => {
+            const cleanParam = param.trim().split('=')[0].trim(); // 기본값 제거
+            if (cleanParam && 
+                /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(cleanParam) && 
+                !pythonKeywords.has(cleanParam)) {
+              variables.add(cleanParam);
+            }
+          });
+        }
+      }
+      
     } else if (language === 'javascript') {
       // JavaScript 변수 선언 패턴들
       const patterns = [
@@ -143,9 +163,10 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
       }
     }
 
-    // 선언된 변수들을 추천에 추가
+    // 선언된 변수들을 추천에 추가 (성능 최적화: 입력이 있을 때만 필터링)
+    const inputLower = input.toLowerCase();
     declaredVariables.forEach(varName => {
-      if (varName.toLowerCase().includes(input.toLowerCase()) || input === '') {
+      if (inputLower === '' || varName.toLowerCase().includes(inputLower)) {
         suggestions.push({
           block: varName,
           completion: '',
@@ -156,7 +177,7 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
     });
 
     return suggestions.filter(s => 
-      s.block.toLowerCase().includes(input.toLowerCase()) || input === ''
+      inputLower === '' || s.block.toLowerCase().includes(inputLower)
     ).slice(0, 8); // 더 많은 추천을 보여주기 위해 8개로 증가
   };
 
