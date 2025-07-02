@@ -195,22 +195,20 @@ export const BlockSuggestions = ({ input, language, code, onBlockSelect }: Block
   }
 
   return (
-    <div className="px-3 py-2">
-      <div className="flex flex-wrap gap-2">
-        {suggestions.map((suggestion, index) => (
-          <Button
-            key={index}
-            variant="ghost"
-            size="sm"
-            className="h-8 px-3 hover:bg-primary/10"
-            onClick={() => onBlockSelect(suggestion.block, suggestion.completion)}
-          >
-            <Badge variant="secondary" className={`text-xs ${getTypeColor(suggestion.type)}`}>
-              {suggestion.block}
-            </Badge>
-          </Button>
-        ))}
-      </div>
-    </div>
+    <>
+      {suggestions.map((suggestion, index) => (
+        <Button
+          key={index}
+          variant="ghost"
+          size="sm"
+          className="h-8 px-3 hover:bg-primary/10 shrink-0"
+          onClick={() => onBlockSelect(suggestion.block, suggestion.completion)}
+        >
+          <Badge variant="secondary" className={`text-xs ${getTypeColor(suggestion.type)}`}>
+            {suggestion.block}
+          </Badge>
+        </Button>
+      ))}
+    </>
   );
 };
